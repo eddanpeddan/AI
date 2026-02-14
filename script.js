@@ -1,5 +1,5 @@
 // ÄNDRA DENNA RAD beroende på var du kör backend
-const API_URL = "http://127.0.0.1:8188";
+const API_URL = "http://localhost:3000/api/generate";
 // När du flyttar till RunPod:
 // const API_URL = "https://din-backend-url.com/api/generate";
 
