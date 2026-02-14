@@ -1,42 +1,39 @@
-body {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-    background: #f5f5f5;
-}
+// ÄNDRA DENNA RAD beroende på var du kör backend
+const API_URL = "http://127.0.0.1:8188";
+// När du flyttar till RunPod:
+// const API_URL = "https://din-backend-url.com/api/generate";
 
-h1 {
-    margin-bottom: 20px;
-}
+async function generateImage() {
+    const prompt = document.getElementById("prompt").value;
+    const status = document.getElementById("status");
+    const resultImg = document.getElementById("result");
 
-.input-box {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+    if (!prompt) {
+        alert("Skriv en prompt först!");
+        return;
+    }
 
-textarea {
-    width: 100%;
-    height: 120px;
-    padding: 10px;
-    font-size: 16px;
-}
+    status.innerHTML = "Genererar bild...";
+    resultImg.style.display = "none";
 
-button {
-    padding: 12px;
-    font-size: 18px;
-    cursor: pointer;
-}
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
 
-.image-container {
-    margin-top: 30px;
-}
+        const data = await response.json();
 
-#result {
-    max-width: 100%;
-    border-radius: 8px;
-    display: none;
-}
+        // Hämta bildfilen från backend /api/image/:name
+        const imageName = data.output.images[0].filename;
 
+        resultImg.src = `http://localhost:3000/api/image/${imageName}`;
+        resultImg.style.display = "block";
+        status.innerHTML = "";
+    }
+    catch (err) {
+        console.error(err);
+        status.innerHTML = "Fel: Kunde inte generera bild.";
+    }
+}
